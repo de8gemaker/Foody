@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Foody"
 include(":app")
+include(":shared")
  
