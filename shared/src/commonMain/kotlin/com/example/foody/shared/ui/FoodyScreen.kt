@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import com.example.foody.shared.model.CartItem
 import com.example.foody.shared.model.Dish
 import com.example.foody.shared.model.DishUiModel
@@ -312,18 +314,20 @@ private fun CategorySidebar(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         uiState.categories.forEach { categoryModel ->
-            val colors = if (categoryModel.isSelected) {
-                CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-            } else {
-                CardDefaults.cardColors(containerColor = Color.Transparent)
-            }
-            Card(
+            val shape = RoundedCornerShape(18.dp)
+            val interactionSource = remember(categoryModel.category.id) { MutableInteractionSource() }
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onCategorySelected(categoryModel.category.id) },
-                colors = colors,
-                elevation = CardDefaults.cardElevation(defaultElevation = if (categoryModel.isSelected) 2.dp else 0.dp),
-                shape = RoundedCornerShape(18.dp),
+                    .clip(shape)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                    ) { onCategorySelected(categoryModel.category.id) },
+                shape = shape,
+                color = if (categoryModel.isSelected) MaterialTheme.colorScheme.surface else Color.Transparent,
+                tonalElevation = if (categoryModel.isSelected) 1.dp else 0.dp,
+                shadowElevation = if (categoryModel.isSelected) 2.dp else 0.dp,
             ) {
                 Column(
                     modifier = Modifier
